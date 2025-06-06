@@ -7,9 +7,11 @@ namespace DevLoopLB.Repositories
 {
     public class EventRepository(DevLoopLbContext context) : IEventRepository
     {
-        public async Task AddEventAsync(Event evt)
+        public async Task<Event> AddEventAsync(Event evt)
         {
             await context.Events.AddAsync(evt);
+            await context.SaveChangesAsync();
+            return evt;
         }
 
         public async Task DeleteEventAsync(int id)

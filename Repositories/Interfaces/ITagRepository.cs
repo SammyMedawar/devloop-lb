@@ -10,5 +10,6 @@ namespace DevLoopLB.Repositories.Interfaces
         Task SaveChangesAsync();
         Task DeleteTagAsync(int id);
         Task UpdateTagAsync(Tag tag);
+        Task<IEnumerable<Tag>> GetTagsByIdsAsync(List<int> tagIds);
     }
 }

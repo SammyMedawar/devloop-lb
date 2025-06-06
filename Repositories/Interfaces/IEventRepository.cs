@@ -6,7 +6,7 @@ namespace DevLoopLB.Repositories.Interfaces
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
         Task<Event> GetEventByIdAsync(int id);
-        Task AddEventAsync(Event evt);
+        Task<Event> AddEventAsync(Event evt);
         Task SaveChangesAsync();
         Task DeleteEventAsync(int id);
         Task UpdateEventAsync(Event evt);

@@ -9,5 +9,6 @@ namespace DevLoopLB.Services.Interfaces
         Task AddTagAsync(Tag tag);
         Task DeleteTagAsync(int id);
         Task UpdateTagAsync(Tag tag);
+        Task<bool> CheckIfTagsExistBulkAsync(List<int> tagIds);
     }
 }

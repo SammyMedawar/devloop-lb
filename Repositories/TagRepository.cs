@@ -53,5 +53,12 @@ namespace DevLoopLB.Repositories
             oldTag.Name = tag.Name;
             context.Tags.Update(oldTag);
         }
+
+        public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(List<int> tagIds)
+        {
+            return await context.Tags
+                .Where(t => tagIds.Contains(t.TagId))
+                .ToListAsync();
+        }
     }
 }

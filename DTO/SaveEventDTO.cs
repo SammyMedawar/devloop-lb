@@ -33,6 +33,8 @@ namespace DevLoopLB.DTO
         public DateOnly EventDateEnd { get; set; }
         [Required(ErrorMessage = "Gallery is required.")]
         public List<SaveImageAssetDTO>? Gallery { get; set; }
+        [Required(ErrorMessage = "Tags are required.")]
+        public List<int>? Tags { get; set; }
     }
 
     public class SaveImageAssetDTO
