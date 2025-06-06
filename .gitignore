@@ -97,3 +97,4 @@ ScaffoldingReadMe.txt
 # Rider project files
 .idea/
 *.sln.iml
+/appsettings.Production.json
