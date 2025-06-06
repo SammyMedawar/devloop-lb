@@ -1,11 +1,11 @@
-﻿using DevLoopLB.Data;
+﻿
 using DevLoopLB.Models;
 using DevLoopLB.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevLoopLB.Repositories
 {
-    public class EventRepository(ApplicationDbContext context) : IEventRepository
+    public class EventRepository(DevLoopLbContext context) : IEventRepository
     {
         public async Task AddEventAsync(Event evt)
         {
@@ -16,8 +16,6 @@ namespace DevLoopLB.Repositories
         {
             return await context.Events
                 .Include(e => e.ImageAssets)
-                .Include(e => e.EventTags)
-                    .ThenInclude(et => et.Tag)
                 .ToListAsync();
         }
 
@@ -25,9 +23,7 @@ namespace DevLoopLB.Repositories
         {
             var eventObj = await context.Events
                 .Include(e => e.ImageAssets)
-                .Include(e => e.EventTags)
-                    .ThenInclude(et => et.Tag)
-                .FirstOrDefaultAsync(e => e.EventID == id);
+                .FirstOrDefaultAsync(e => e.EventId == id);
             if (eventObj == null)
             {
                 throw new KeyNotFoundException($"Event with ID {id} not found.");

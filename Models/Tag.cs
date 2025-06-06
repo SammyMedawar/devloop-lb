@@ -1,9 +1,17 @@
-﻿namespace DevLoopLB.Models
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace DevLoopLB.Models;
+
+public partial class Tag
 {
-    public class Tag
-    {
-        public int TagID { get; set; }
-        public string Name { get; set; }
-        public ICollection<EventTag> EventTags { get; set; }
-    }
+    public int TagId { get; set; }
+
+    [Required(ErrorMessage = "Tag name is required")]
+    [StringLength(100, MinimumLength = 2, ErrorMessage = "Tag name must be between 2 and 100 characters")]
+    [RegularExpression(@"^[a-zA-Z0-9\s-]*$", ErrorMessage = "Tag name can only contain letters, numbers, spaces, and hyphens")]
+    public string Name { get; set; } = null!;
+
+    public virtual ICollection<Event> Events { get; set; } = new List<Event>();
 }

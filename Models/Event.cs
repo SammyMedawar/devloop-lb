@@ -1,19 +1,31 @@
-﻿namespace DevLoopLB.Models
-{
-    public class Event
-    {
-        public int EventID { get; set; }
-        public string Title { get; set; }
-        public string ShortDescription { get; set; }
-        public string LongDescription { get; set; }
-        public string MetaTitle { get; set; }
-        public string MetaDescription { get; set; }
-        public string Poster { get; set; }
-        public DateTime? DateCreated { get; set; }
-        public DateTime? EventDateStart { get; set; }
-        public DateTime? EventDateEnd { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        public ICollection<ImageAsset> ImageAssets { get; set; }
-        public ICollection<EventTag> EventTags { get; set; }
-    }
+namespace DevLoopLB.Models;
+
+public partial class Event
+{
+    public int EventId { get; set; }
+
+    public string Title { get; set; } = null!;
+
+    public string Shortdescription { get; set; } = null!;
+
+    public string? Longdescription { get; set; }
+
+    public string? Metatitle { get; set; }
+
+    public string? Metadescription { get; set; }
+
+    public string? Poster { get; set; }
+
+    public DateTime? DateCreated { get; set; }
+
+    public DateOnly EventDateStart { get; set; }
+
+    public DateOnly? EventDateEnd { get; set; }
+
+    public virtual ICollection<ImageAsset> ImageAssets { get; set; } = new List<ImageAsset>();
+
+    public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
 }
