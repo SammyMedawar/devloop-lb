@@ -1,0 +1,99 @@
+﻿# Visual Studio and Rider
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+bin/
+obj/
+out/
+
+# .NET Core generated files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# User-specific files
+*.swp
+*.bak
+*.backup
+*.tmp
+*.temp
+*.log
+
+# OS generated files
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Rider-specific
+.idea/
+
+# Visual Studio Code
+.vscode/
+
+# ASP.NET Core secrets and sensitive configuration
+appsettings.Development.json
+appsettings.json
+
+# Logs
+*.log
+
+# npm and yarn
+node_modules/
+bower_components/
+
+# Publish and deploy folders
+publish/
+*.publish/
+*.deploy/
+
+# ReSharper
+_ReSharper*/
+
+# JetBrains Rider
+.idea/
+
+# Rider Local History
+.idea/.idea.LocalHistory/
+
+# Others
+*.DS_Store
+*.apk
+*.ipa
+
+# Test results
+TestResults/
+*.TestResults/
+
+# Backup & temporary files
+*.tmp
+*.bak
+*.old
+*.orig
+*.swp
+*.swo
+
+# NuGet packages
+*.nupkg
+packages/
+
+# NuGet v3 cache
+~/.nuget/packages/
+
+# Mac
+.DS_Store
+
+# Windows image file caches
+ehthumbs.db
+Thumbs.db
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider project files
+.idea/
+*.sln.iml
