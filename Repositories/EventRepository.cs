@@ -12,6 +12,15 @@ namespace DevLoopLB.Repositories
             await context.Events.AddAsync(evt);
         }
 
+        public async Task DeleteEventAsync(int id)
+        {
+            var evt = await context.Events.FindAsync(id);
+            if (evt == null) {
+                throw new KeyNotFoundException($"Event with ID {id} not found.");
+            }
+            context.Events.Remove(evt);
+        }
+
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
             return await context.Events
@@ -35,5 +44,25 @@ namespace DevLoopLB.Repositories
         {
             await context.SaveChangesAsync();
         }
+
+        public async Task UpdateEventAsync(Event evt)
+        {
+            var oldEvent = await context.Events.FindAsync(evt.EventId);
+            if(oldEvent == null)
+            {
+                throw new KeyNotFoundException($"Event with ID {id} not found.");
+            }
+        }
+
+        public async Task<bool> DoesEventExist(int eventId)
+        {
+            var evt = await GetEventByIdAsync(eventId);
+            if (evt == null || evt.EventId == 0)
+            {
+                throw new KeyNotFoundException($"Event not found with id: {eventId}");
+            }
+            return true;
+        }
+
     }
 }

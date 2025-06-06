@@ -26,12 +26,15 @@ namespace DevLoopLB.Services
 
         public async Task DeleteTagAsync(int id)
         {
+            //TODO CHECK IF EXISTS
             await repository.DeleteTagAsync(id);
             await repository.SaveChangesAsync();
         }
 
         public async Task UpdateTagAsync(Tag tag)
         {
+
+            //TODO CHECK IF EXISTS
             await repository.UpdateTagAsync(tag);
             await repository.SaveChangesAsync();
         }

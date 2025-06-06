@@ -10,6 +10,7 @@ public partial class ImageAsset
     public string? Caption { get; set; }
 
     public int EventId { get; set; }
+    public string? ImageAssetLink { get; set; }
 
     public virtual Event Event { get; set; } = null!;
 }

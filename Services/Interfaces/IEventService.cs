@@ -1,4 +1,5 @@
-﻿using DevLoopLB.Models;
+﻿using DevLoopLB.DTO;
+using DevLoopLB.Models;
 
 namespace DevLoopLB.Services.Interfaces
 {
@@ -6,6 +7,6 @@ namespace DevLoopLB.Services.Interfaces
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
         Task<Event> GetEventByIdAsync(int id);
-        Task AddEventAsync(Event evt);
+        Task AddEventAsync(SaveEventDTO evt);
     }
 }
