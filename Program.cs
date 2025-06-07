@@ -19,11 +19,13 @@ builder.Services.AddDbContext<DevLoopLbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
-
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IImageAssetRepository, ImageAssetRepository>();
+builder.Services.AddScoped<IImageAssetService, ImageAssetService>();
 
 var app = builder.Build();
 

@@ -8,40 +8,39 @@ namespace DevLoopLB.Services
     public class EventService(IEventRepository repository, IImageAssetService imageAssetService,
         ITagService tagService, DevLoopLbContext context) : IEventService
     {
-        public async Task<int> AddEventAsync(SaveEventDTO evt)
+        public async Task<int> AddEventAsync(SaveEventDTO eventDto)
         {
             using var transaction = await context.Database.BeginTransactionAsync();
             try
             {
-                if (evt.Gallery == null || evt.Gallery.Count == 0)
+                if (eventDto.Gallery == null || eventDto.Gallery.Count == 0)
                 {
                     throw new BadHttpRequestException("Gallery cannot be empty");
                 }
-                if (evt.Tags == null || evt.Tags.Count == 0)
+                if (eventDto.Tags == null || eventDto.Tags.Count == 0)
                 {
                     throw new BadHttpRequestException("Tags cannot be empty");
                 }
-                bool doTagsExist = await tagService.CheckIfTagsExistBulkAsync(evt.Tags);
+                bool doTagsExist = await tagService.CheckIfTagsExistBulkAsync(eventDto.Tags);
                 if (!doTagsExist)
                 {
                     throw new BadHttpRequestException("Invalid tags");
                 }
-                var tags = await tagService.GetTagsByIdsAsync(evt.Tags);
+                var tags = await tagService.GetTagsByIdsAsync(eventDto.Tags);
 
                 Event newEvt = new Event
                 {
-                    Title = evt.Title?? "Default Title",
-                    Shortdescription = evt.Shortdescription ?? "Default Short Description",
-                    Longdescription = evt.LongDescription,
-                    Metatitle = evt.MetaTitle,
-                    Metadescription = evt.MetaDescription,
+                    Title = eventDto.Title?? "Default Title",
+                    Shortdescription = eventDto.Shortdescription ?? "Default Short Description",
+                    Longdescription = eventDto.LongDescription,
+                    Metatitle = eventDto.MetaTitle,
+                    Metadescription = eventDto.MetaDescription,
                     DateCreated = DateTime.Now,
-                    EventDateStart = evt.EventDateStart,
-                    EventDateEnd = evt.EventDateEnd,
+                    EventDateStart = eventDto.EventDateStart,
+                    EventDateEnd = eventDto.EventDateEnd,
                     Tags = tags.ToList()
                 };
-                newEvt = await repository.AddEventAsync(newEvt);
-                await imageAssetService.AddImageAssetsByEventId(evt.Gallery, newEvt.EventId);
+                newEvt = await repository.AddEventAsync(newEvt, eventDto);
                 await transaction.CommitAsync();
                 return newEvt.EventId;
             }

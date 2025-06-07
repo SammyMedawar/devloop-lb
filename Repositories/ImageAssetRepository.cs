@@ -10,7 +10,6 @@ namespace DevLoopLB.Repositories
         public async Task AddMultipleImageAssets(List<ImageAsset> imageAssets)
         {
             context.ImageAssets.AddRange(imageAssets);
-            await context.SaveChangesAsync();
         }
 
         public async Task DeleteMultipleImageAssetsByEventId(int eventId)

@@ -1,15 +1,18 @@
 ﻿
+using DevLoopLB.DTO;
 using DevLoopLB.Models;
 using DevLoopLB.Repositories.Interfaces;
+using DevLoopLB.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DevLoopLB.Repositories
 {
-    public class EventRepository(DevLoopLbContext context) : IEventRepository
+    public class EventRepository(DevLoopLbContext context, IImageAssetService imageAssetService) : IEventRepository
     {
-        public async Task<Event> AddEventAsync(Event evt)
+        public async Task<Event> AddEventAsync(Event evt, SaveEventDTO eventDTO)
         {
             await context.Events.AddAsync(evt);
+            await imageAssetService.AddImageAssetsByEventId(eventDTO.Gallery, evt.EventId);
             await context.SaveChangesAsync();
             return evt;
         }

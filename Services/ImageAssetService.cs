@@ -2,11 +2,11 @@
 using DevLoopLB.Models;
 using DevLoopLB.Repositories.Interfaces;
 using DevLoopLB.Services.Interfaces;
-using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace DevLoopLB.Services
 {
-    public class ImageAssetService(IImageAssetRepository imageAssetRepository, IEventRepository eventRepository)
+    public class ImageAssetService(IImageAssetRepository imageAssetRepository, IEventRepository eventRepository,
+        IFileStorageService fileStorageService)
         : IImageAssetService
     {
         public async Task AddImageAssetsByEventId(List<SaveImageAssetDTO> imageAssetsDtos, int eventId)
@@ -15,26 +15,16 @@ namespace DevLoopLB.Services
 
             foreach (var dto in imageAssetsDtos)
             {
-                var randomGuid = Guid.NewGuid().ToString();
-                var extension = Path.GetExtension(dto.ImageFile?.FileName);
-                var fileName = randomGuid + extension;
+                if (dto.ImageFile == null)
+                    throw new ArgumentException("Image file is required");
 
-                var folderPath = Path.Combine("wwwroot", "EventsGallery");
-                if (!Directory.Exists(folderPath))
-                    Directory.CreateDirectory(folderPath);
-
-                var filePath = Path.Combine(folderPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await dto.ImageFile.CopyToAsync(stream);
-                }
+                var savedFilePath = await fileStorageService.SaveFileAsync(dto.ImageFile, "EventsGallery");
 
                 imageAssets.Add(new ImageAsset
                 {
                     Caption = dto.Caption,
                     EventId = eventId,
-                    ImageAssetLink = "/EventsGallery/" + fileName
+                    ImageAssetLink = savedFilePath
                 });
             }
 
@@ -47,17 +37,12 @@ namespace DevLoopLB.Services
             {
                 var assets = await imageAssetRepository.GetAllImageAssetsByEventId(eventId);
 
-                foreach (var asset in assets)
-                {
-                    if (!string.IsNullOrEmpty(asset.ImageAssetLink))
-                    {
-                        var filePath = Path.Combine("wwwroot", asset.ImageAssetLink.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
-                        if (File.Exists(filePath))
-                        {
-                            File.Delete(filePath);
-                        }
-                    }
-                }
+                var filePaths = assets
+                    .Where(a => !string.IsNullOrEmpty(a.ImageAssetLink))
+                    .Select(a => a.ImageAssetLink!)
+                    .ToList();
+
+                await fileStorageService.DeleteMultipleFilesAsync(filePaths);
 
                 await imageAssetRepository.DeleteMultipleImageAssetsByEventId(eventId);
             }
