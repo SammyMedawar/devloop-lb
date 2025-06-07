@@ -31,7 +31,7 @@ namespace DevLoopLB.Services
 
                 Event newEvt = new Event
                 {
-                    Title = eventDto.Title?? "Default Title",
+                    Title = eventDto.Title ?? "Default Title",
                     Shortdescription = eventDto.Shortdescription ?? "Default Short Description",
                     Longdescription = eventDto.LongDescription,
                     Metatitle = eventDto.MetaTitle,
@@ -42,6 +42,7 @@ namespace DevLoopLB.Services
                     Tags = tags.ToList()
                 };
                 newEvt = await repository.AddEventAsync(newEvt, eventDto);
+                await repository.SaveChangesAsync();
                 await transaction.CommitAsync();
                 return newEvt.EventId;
             }
@@ -73,42 +74,51 @@ namespace DevLoopLB.Services
 
         public async Task UpdateEventAsync(int id, SaveEventDTO evt)
         {
-            if(evt.Gallery == null || evt.Gallery.Count == 0)
+            using var transaction = await context.Database.BeginTransactionAsync();
+            try
             {
-                throw new BusinessValidationException("Gallery cannot be empty");
+                if (evt.Gallery == null || evt.Gallery.Count == 0)
+                {
+                    throw new BusinessValidationException("Gallery cannot be empty");
+                }
+                if (evt.Tags == null || evt.Tags.Count == 0)
+                {
+                    throw new BusinessValidationException("Tags cannot be empty");
+                }
+                var existingEvent = await repository.GetEventByIdAsync(id);
+                if (existingEvent == null || existingEvent.EventId == 0)
+                {
+                    throw new EntityNotFoundException("Event", 0);
+                }
+
+                bool doTagsExist = await tagService.CheckIfTagsExistBulkAsync(evt.Tags);
+                if (!doTagsExist)
+                {
+                    throw new BusinessValidationException("Invalid tags");
+                }
+                var tags = await tagService.GetTagsByIdsAsync(evt.Tags);
+
+                existingEvent.Title = evt.Title ?? existingEvent.Title;
+                existingEvent.Shortdescription = evt.Shortdescription ?? existingEvent.Shortdescription;
+                existingEvent.Longdescription = evt.LongDescription;
+                existingEvent.Metatitle = evt.MetaTitle;
+                existingEvent.Metadescription = evt.MetaDescription;
+                existingEvent.EventDateStart = evt.EventDateStart;
+                existingEvent.EventDateEnd = evt.EventDateEnd;
+                existingEvent.Tags = tags.ToList();
+
+                await repository.UpdateEventAsync(existingEvent);
+
+                await imageAssetService.DeleteImageAssetsByEventId(id);
+                await imageAssetService.AddImageAssetsByEventId(evt.Gallery, id);
+
+                await repository.SaveChangesAsync();
             }
-            if (evt.Tags == null || evt.Tags.Count == 0)
+            catch
             {
-                throw new BusinessValidationException("Tags cannot be empty");
+                await transaction.RollbackAsync();
+                throw;
             }
-            var existingEvent = await repository.GetEventByIdAsync(id);
-            if(existingEvent == null || existingEvent.EventId == 0)
-            {
-                throw new EntityNotFoundException("Event", 0);
-            }
-
-            bool doTagsExist = await tagService.CheckIfTagsExistBulkAsync(evt.Tags);
-            if (!doTagsExist)
-            {
-                throw new BusinessValidationException("Invalid tags");
-            }
-            var tags = await tagService.GetTagsByIdsAsync(evt.Tags);
-
-            existingEvent.Title = evt.Title ?? existingEvent.Title;
-            existingEvent.Shortdescription = evt.Shortdescription ?? existingEvent.Shortdescription;
-            existingEvent.Longdescription = evt.LongDescription;
-            existingEvent.Metatitle = evt.MetaTitle;
-            existingEvent.Metadescription = evt.MetaDescription;
-            existingEvent.EventDateStart = evt.EventDateStart;
-            existingEvent.EventDateEnd = evt.EventDateEnd;
-            existingEvent.Tags = tags.ToList();
-
-            await repository.UpdateEventAsync(existingEvent);
-
-            await imageAssetService.DeleteImageAssetsByEventId(id);
-            await imageAssetService.AddImageAssetsByEventId(evt.Gallery, id);
-
-            await repository.SaveChangesAsync();
         }
     }
 }

@@ -13,7 +13,6 @@ namespace DevLoopLB.Repositories
         {
             await context.Events.AddAsync(evt);
             await imageAssetService.AddImageAssetsByEventId(eventDTO.Gallery, evt.EventId);
-            await context.SaveChangesAsync();
             return evt;
         }
 

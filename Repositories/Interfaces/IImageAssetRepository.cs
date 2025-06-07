@@ -8,5 +8,6 @@ namespace DevLoopLB.Repositories.Interfaces
         Task<IEnumerable<ImageAsset>> GetAllImageAssetsByEventId(int eventId);
         Task AddMultipleImageAssets(List<ImageAsset> imageAssets);
         Task DeleteMultipleImageAssetsByEventId(int eventId);
+        Task SaveChangesAsync();
     }
 }

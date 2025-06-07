@@ -16,7 +16,6 @@ namespace DevLoopLB.Repositories
         {
             var assetsToDelete = context.ImageAssets.Where(x => x.EventId == eventId).ToList();
             context.ImageAssets.RemoveRange(assetsToDelete);
-            await context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<ImageAsset>> GetAllImageAssetsByEventId(int eventId)
@@ -24,6 +23,11 @@ namespace DevLoopLB.Repositories
             return await context.ImageAssets
                 .Where(x => x.EventId == eventId)
                 .ToListAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
         }
     }
 }

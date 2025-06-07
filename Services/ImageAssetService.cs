@@ -30,6 +30,7 @@ namespace DevLoopLB.Services
             }
 
             await imageAssetRepository.AddMultipleImageAssets(imageAssets);
+            await imageAssetRepository.SaveChangesAsync();
         }
 
         public async Task DeleteImageAssetsByEventId(int eventId)
@@ -46,6 +47,7 @@ namespace DevLoopLB.Services
                 await fileStorageService.DeleteMultipleFilesAsync(filePaths);
 
                 await imageAssetRepository.DeleteMultipleImageAssetsByEventId(eventId);
+                await imageAssetRepository.SaveChangesAsync();
             }
         }
         public async Task<IEnumerable<ImageAsset>> GetAllImageAssetsByEventIdAsync(int eventId)
