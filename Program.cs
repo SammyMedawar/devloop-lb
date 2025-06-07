@@ -1,4 +1,5 @@
 
+using DevLoopLB.Middlewares;
 using DevLoopLB.Models;
 using DevLoopLB.Repositories;
 using DevLoopLB.Repositories.Interfaces;
@@ -39,6 +40,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
 
