@@ -21,8 +21,6 @@ namespace DevLoopLB.DTO
 
         [StringLength(160, ErrorMessage = "Meta description cannot exceed 160 characters.")]
         public string? MetaDescription { get; set; }
-
-        [Required(ErrorMessage = "Poster image is required.")]
         public IFormFile? Poster { get; set; }
 
         [Required(ErrorMessage = "Event start date is required.")]

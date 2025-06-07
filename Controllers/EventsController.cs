@@ -2,6 +2,7 @@
 using DevLoopLB.Models;
 using DevLoopLB.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace DevLoopLB.Controllers
 {

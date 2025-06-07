@@ -26,22 +26,12 @@ namespace DevLoopLB.Services
 
         public async Task DeleteTagAsync(int id)
         {
-            Tag tag = await repository.GetTagByIdAsync(id);
-            if (tag == null)
-            {
-                throw new EntityNotFoundException("Tag", id);
-            }
             await repository.DeleteTagAsync(id);
             await repository.SaveChangesAsync();
         }
 
         public async Task UpdateTagAsync(Tag tag)
         {
-            Tag oldTag = await repository.GetTagByIdAsync(tag.TagId);
-            if (oldTag == null)
-            {
-                throw new EntityNotFoundException("Tag", tag.TagId);
-            }
             await repository.UpdateTagAsync(tag);
             await repository.SaveChangesAsync();
         }
