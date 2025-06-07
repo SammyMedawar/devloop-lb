@@ -98,3 +98,4 @@ ScaffoldingReadMe.txt
 .idea/
 *.sln.iml
 /appsettings.Production.json
+/wwwroot/EventsGallery
