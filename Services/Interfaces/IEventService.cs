@@ -7,6 +7,6 @@ namespace DevLoopLB.Services.Interfaces
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
         Task<Event> GetEventByIdAsync(int id);
-        Task AddEventAsync(SaveEventDTO evt);
+        Task<int> AddEventAsync(SaveEventDTO evt);
     }
 }

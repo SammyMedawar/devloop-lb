@@ -64,5 +64,10 @@ namespace DevLoopLB.Services
             }
             return true;
         }
+
+        public async Task<IEnumerable<Tag>> GetTagsByIdsAsync(List<int> tagIds)
+        {
+            return await repository.GetTagsByIdsAsync(tagIds);
+        }
     }
 }

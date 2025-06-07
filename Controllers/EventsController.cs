@@ -1,4 +1,5 @@
-﻿using DevLoopLB.Models;
+﻿using DevLoopLB.DTO;
+using DevLoopLB.Models;
 using DevLoopLB.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,10 +26,14 @@ namespace DevLoopLB.Controllers
             return Ok(evt);
         }
         [HttpPost]
-        public async Task<ActionResult> CreateEvent([FromBody] Event evt)
+        public async Task<ActionResult> CreateEvent([FromBody] SaveEventDTO evt)
         {
-            await eventService.AddEventAsync(evt);
-            return CreatedAtAction(nameof(GetEvent), new { id = evt.EventId }, evt);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var createdEventID = await eventService.AddEventAsync(evt);
+            return CreatedAtAction(nameof(GetEvent), new { createdEventID });
         }
     }
 }
