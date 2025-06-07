@@ -1,7 +1,7 @@
 ﻿using DevLoopLB.Models;
-using DevLoopLB.Repositories;
 using DevLoopLB.Repositories.Interfaces;
 using DevLoopLB.Services.Interfaces;
+using DevLoopLB.Exceptions;
 
 namespace DevLoopLB.Services
 {
@@ -29,7 +29,7 @@ namespace DevLoopLB.Services
             Tag tag = await repository.GetTagByIdAsync(id);
             if (tag == null)
             {
-                throw new KeyNotFoundException($"Tag with id {id} not found");
+                throw new EntityNotFoundException("Tag", id);
             }
             await repository.DeleteTagAsync(id);
             await repository.SaveChangesAsync();
@@ -40,7 +40,7 @@ namespace DevLoopLB.Services
             Tag oldTag = await repository.GetTagByIdAsync(tag.TagId);
             if (oldTag == null)
             {
-                throw new KeyNotFoundException($"Tag with id {tag.TagId} not found");
+                throw new EntityNotFoundException("Tag", tag.TagId);
             }
             await repository.UpdateTagAsync(tag);
             await repository.SaveChangesAsync();

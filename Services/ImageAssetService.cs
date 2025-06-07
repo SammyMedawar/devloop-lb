@@ -1,4 +1,5 @@
 ﻿using DevLoopLB.DTO;
+using DevLoopLB.Exceptions;
 using DevLoopLB.Models;
 using DevLoopLB.Repositories.Interfaces;
 using DevLoopLB.Services.Interfaces;
@@ -16,7 +17,7 @@ namespace DevLoopLB.Services
             foreach (var dto in imageAssetsDtos)
             {
                 if (dto.ImageFile == null)
-                    throw new ArgumentException("Image file is required");
+                    throw new BusinessValidationException("Image file is required");
 
                 var savedFilePath = await fileStorageService.SaveFileAsync(dto.ImageFile, "EventsGallery");
 
@@ -53,7 +54,7 @@ namespace DevLoopLB.Services
             {
                 return await imageAssetRepository.GetAllImageAssetsByEventId(eventId);
             }
-            throw new KeyNotFoundException($"Event not found with id: {eventId}");
+            throw new EntityNotFoundException("Event", eventId);
         }
 
 
