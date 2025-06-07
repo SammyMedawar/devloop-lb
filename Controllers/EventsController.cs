@@ -35,5 +35,23 @@ namespace DevLoopLB.Controllers
             var createdEventID = await eventService.AddEventAsync(evt);
             return CreatedAtAction(nameof(GetEvent), new { createdEventID });
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteEvent(int id)
+        {
+            await eventService.DeleteEventAsync(id);
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdateEvent (int id, [FromBody] SaveEventDTO evt)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await eventService.UpdateEventAsync(id, evt);
+            return NoContent();
+        }
     }
 }

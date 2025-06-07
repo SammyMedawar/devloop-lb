@@ -51,6 +51,16 @@ namespace DevLoopLB.Services
                 throw;
             }
         }
+
+        public async Task DeleteEventAsync(int id)
+        {
+            var existingEvent = await repository.GetEventByIdAsync(id);
+            await imageAssetService.DeleteImageAssetsByEventId(id);
+
+            await repository.DeleteEventAsync(id);
+            await repository.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
             return await repository.GetAllEventsAsync();
@@ -61,6 +71,40 @@ namespace DevLoopLB.Services
             return await repository.GetEventByIdAsync(id);
         }
 
+        public async Task UpdateEventAsync(int id, SaveEventDTO evt)
+        {
+            if(evt.Gallery == null || evt.Gallery.Count == 0)
+            {
+                throw new BadHttpRequestException("Gallery cannot be empty");
+            }
+            if (evt.Tags == null || evt.Tags.Count == 0)
+            {
+                throw new BadHttpRequestException("Tags cannot be empty");
+            }
+            var existingEvent = await repository.GetEventByIdAsync(id);
 
+            bool doTagsExist = await tagService.CheckIfTagsExistBulkAsync(evt.Tags);
+            if (!doTagsExist)
+            {
+                throw new BadHttpRequestException("Invalid tags");
+            }
+            var tags = await tagService.GetTagsByIdsAsync(evt.Tags);
+
+            existingEvent.Title = evt.Title ?? existingEvent.Title;
+            existingEvent.Shortdescription = evt.Shortdescription ?? existingEvent.Shortdescription;
+            existingEvent.Longdescription = evt.LongDescription;
+            existingEvent.Metatitle = evt.MetaTitle;
+            existingEvent.Metadescription = evt.MetaDescription;
+            existingEvent.EventDateStart = evt.EventDateStart;
+            existingEvent.EventDateEnd = evt.EventDateEnd;
+            existingEvent.Tags = tags.ToList();
+
+            await repository.UpdateEventAsync(existingEvent);
+
+            await imageAssetService.DeleteImageAssetsByEventId(id);
+            await imageAssetService.AddImageAssetsByEventId(evt.Gallery, id);
+
+            await repository.SaveChangesAsync();
+        }
     }
 }
