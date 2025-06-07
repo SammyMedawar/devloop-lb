@@ -12,5 +12,7 @@ namespace DevLoopLB.Repositories.Interfaces
         Task DeleteEventAsync(int id);
         Task UpdateEventAsync(Event evt);
         Task<bool> DoesEventExist(int eventId);
+        Task<(List<Event> events, int totalRows)> GetFilteredEventsAsync(EventFilterRequestDTO filter);
+        Task<int> GetTotalEventCountAsync();
     }
 }

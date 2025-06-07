@@ -72,6 +72,23 @@ namespace DevLoopLB.Services
             return await repository.GetEventByIdAsync(id);
         }
 
+        public async Task<EventPagedResponseDTO> GetFilteredEventsAsync(EventFilterRequestDTO filter)
+        {
+            var (events, totalRows) = await repository.GetFilteredEventsAsync(filter);
+            var totalPages = (int)Math.Ceiling((double)totalRows / filter.PageSize);
+            return new EventPagedResponseDTO
+            {
+                Events = events,
+                Pagination = new PaginationMetadata
+                {
+                    CurrentPage = filter.CurrentPage,
+                    PageSize = filter.PageSize,
+                    TotalRows = totalRows,
+                    TotalPages = totalPages
+                }
+            };
+        }
+
         public async Task UpdateEventAsync(int id, SaveEventDTO evt)
         {
             using var transaction = await context.Database.BeginTransactionAsync();

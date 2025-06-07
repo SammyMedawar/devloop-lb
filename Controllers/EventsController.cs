@@ -54,5 +54,16 @@ namespace DevLoopLB.Controllers
             await eventService.UpdateEventAsync(id, evt);
             return NoContent();
         }
+
+        [HttpGet("filtered")]
+        public async Task<ActionResult<EventPagedResponseDTO>> GetFilteredEvents([FromQuery] EventFilterRequestDTO filter)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await eventService.GetFilteredEventsAsync(filter);
+            return Ok(result);
+        }
     }
 }

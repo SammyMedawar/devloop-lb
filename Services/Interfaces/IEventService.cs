@@ -10,5 +10,7 @@ namespace DevLoopLB.Services.Interfaces
         Task<int> AddEventAsync(SaveEventDTO evt);
         Task DeleteEventAsync(int id);
         Task UpdateEventAsync(int id, SaveEventDTO evt);
+        Task<EventPagedResponseDTO> GetFilteredEventsAsync(EventFilterRequestDTO filter);
+
     }
 }

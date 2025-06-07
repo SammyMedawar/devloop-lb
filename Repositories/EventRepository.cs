@@ -67,5 +67,54 @@ namespace DevLoopLB.Repositories
             return true;
         }
 
+        public async Task<(List<Event> events, int totalRows)> GetFilteredEventsAsync(EventFilterRequestDTO filter)
+        {
+            var query = context.Events
+                .Include(e => e.ImageAssets)
+                .Include(e => e.Tags)
+                .AsQueryable();
+
+            query = ApplyFilters(query, filter);
+
+            var totalRows = await query.CountAsync();
+
+            var events = await query
+                .OrderByDescending(e => e.DateCreated)
+                .Skip(filter.Skip)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+            return (events, totalRows);
+        }
+
+        public async Task<int> GetTotalEventCountAsync()
+        {
+            return await context.Events.CountAsync();
+        }
+
+        private IQueryable<Event> ApplyFilters(IQueryable<Event> query, EventFilterRequestDTO filter)
+        {
+            if (filter.HasSearchQuery)
+            {
+                query = query.Where(e => e.Title.Contains(filter.SearchQuery!, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (filter.EventDateStart.HasValue)
+            {
+                query = query.Where(e => e.EventDateStart >= filter.EventDateStart.Value);
+            }
+
+            if (filter.EventDateEnd.HasValue)
+            {
+                query = query.Where(e => e.EventDateStart <= filter.EventDateEnd.Value);
+            }
+
+            if (filter.HasTagFilter)
+            {
+                query = query.Where(e => e.Tags.Any(t => filter.TagIds!.Contains(t.TagId)));
+            }
+
+            return query;
+        }
     }
 }
