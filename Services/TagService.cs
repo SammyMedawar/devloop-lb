@@ -5,7 +5,7 @@ using DevLoopLB.Services.Interfaces;
 
 namespace DevLoopLB.Services
 {
-    public class TagService (ITagRepository repository) : ITagService
+    public class TagService(ITagRepository repository) : ITagService
     {
         public async Task AddTagAsync(Tag tag)
         {
@@ -26,15 +26,22 @@ namespace DevLoopLB.Services
 
         public async Task DeleteTagAsync(int id)
         {
-            //TODO CHECK IF EXISTS
+            Tag tag = await repository.GetTagByIdAsync(id);
+            if (tag == null)
+            {
+                throw new KeyNotFoundException($"Tag with id {id} not found");
+            }
             await repository.DeleteTagAsync(id);
             await repository.SaveChangesAsync();
         }
 
         public async Task UpdateTagAsync(Tag tag)
         {
-
-            //TODO CHECK IF EXISTS
+            Tag oldTag = await repository.GetTagByIdAsync(tag.TagId);
+            if (oldTag == null)
+            {
+                throw new KeyNotFoundException($"Tag with id {tag.TagId} not found");
+            }
             await repository.UpdateTagAsync(tag);
             await repository.SaveChangesAsync();
         }
