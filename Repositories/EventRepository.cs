@@ -12,6 +12,7 @@ namespace DevLoopLB.Repositories
         public async Task<Event> AddEventAsync(Event evt, SaveEventDTO eventDTO)
         {
             await context.Events.AddAsync(evt);
+            await context.SaveChangesAsync();
             await imageAssetService.AddImageAssetsByEventId(eventDTO.Gallery, evt.EventId);
             return evt;
         }
@@ -29,6 +30,7 @@ namespace DevLoopLB.Repositories
         {
             return await context.Events
                 .Include(e => e.ImageAssets)
+                .Include(e=>e.Tags)
                 .ToListAsync();
         }
 
@@ -36,6 +38,7 @@ namespace DevLoopLB.Repositories
         {
             var eventObj = await context.Events
                 .Include(e => e.ImageAssets)
+                .Include(e=>e.Tags)
                 .FirstOrDefaultAsync(e => e.EventId == id);
             if (eventObj == null)
             {
@@ -51,30 +54,7 @@ namespace DevLoopLB.Repositories
 
         public async Task UpdateEventAsync(Event evt)
         {
-            var existingEvent = await context.Events
-                .Include(e => e.Tags)
-                .FirstOrDefaultAsync(e => e.EventId == evt.EventId);
-
-            if (existingEvent == null)
-            {
-                throw new KeyNotFoundException($"Event with ID {evt.EventId} not found.");
-            }
-
-            existingEvent.Title = evt.Title;
-            existingEvent.Shortdescription = evt.Shortdescription;
-            existingEvent.Longdescription = evt.Longdescription;
-            existingEvent.Metatitle = evt.Metatitle;
-            existingEvent.Metadescription = evt.Metadescription;
-            existingEvent.EventDateStart = evt.EventDateStart;
-            existingEvent.EventDateEnd = evt.EventDateEnd;
-
-            existingEvent.Tags.Clear();
-            foreach (var tag in evt.Tags)
-            {
-                existingEvent.Tags.Add(tag);
-            }
-
-            context.Events.Update(existingEvent);
+            context.Events.Update(evt);
         }
 
         public async Task<bool> DoesEventExist(int eventId)

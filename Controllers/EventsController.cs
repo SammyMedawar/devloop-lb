@@ -27,14 +27,14 @@ namespace DevLoopLB.Controllers
             return Ok(evt);
         }
         [HttpPost]
-        public async Task<ActionResult> CreateEvent([FromBody] SaveEventDTO evt)
+        public async Task<ActionResult> CreateEvent([FromForm] SaveEventDTO evt)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var createdEventID = await eventService.AddEventAsync(evt);
-            return CreatedAtAction(nameof(GetEvent), new { createdEventID });
+            return Ok(new { EventId = createdEventID, Message = "Event created successfully" });
         }
 
         [HttpDelete("{id}")]
@@ -45,7 +45,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateEvent (int id, [FromBody] SaveEventDTO evt)
+        public async Task<ActionResult> UpdateEvent (int id, [FromForm] SaveEventDTO evt)
         {
             if (!ModelState.IsValid)
             {

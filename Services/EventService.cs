@@ -105,7 +105,7 @@ namespace DevLoopLB.Services
                 existingEvent.Metadescription = evt.MetaDescription;
                 existingEvent.EventDateStart = evt.EventDateStart;
                 existingEvent.EventDateEnd = evt.EventDateEnd;
-                existingEvent.Tags = tags.ToList();
+                existingEvent.Tags = new List<Tag>(tags.ToList());
 
                 await repository.UpdateEventAsync(existingEvent);
 
@@ -113,6 +113,7 @@ namespace DevLoopLB.Services
                 await imageAssetService.AddImageAssetsByEventId(evt.Gallery, id);
 
                 await repository.SaveChangesAsync();
+                await transaction.CommitAsync();
             }
             catch
             {
