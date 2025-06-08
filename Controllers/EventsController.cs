@@ -4,6 +4,7 @@ using DevLoopLB.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace DevLoopLB.Controllers
 {
@@ -30,7 +31,7 @@ namespace DevLoopLB.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateEvent([FromForm] SaveEventDTO evt)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !evt.Gallery.Any() || !TryValidateModel(evt.Gallery, "SaveImageAssetDTO"))
             {
                 return BadRequest(ModelState);
             }
@@ -48,7 +49,7 @@ namespace DevLoopLB.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdateEvent (int id, [FromForm] SaveEventDTO evt)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid || !evt.Gallery.Any() || !TryValidateModel(evt.Gallery, "SaveImageAssetDTO"))
             {
                 return BadRequest(ModelState);
             }
