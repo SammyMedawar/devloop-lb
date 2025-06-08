@@ -40,6 +40,7 @@ namespace DevLoopLB.Middlewares
                 KeyNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
                 ArgumentException => (StatusCodes.Status400BadRequest, "Invalid request data"),
                 InvalidLoginException => (StatusCodes.Status401Unauthorized, exception.Message),
+                UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, exception.Message),
                 _ => (StatusCodes.Status500InternalServerError, "An internal server error occurred")
             };
 

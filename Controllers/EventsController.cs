@@ -1,10 +1,9 @@
 ﻿using DevLoopLB.DTO;
 using DevLoopLB.Models;
 using DevLoopLB.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 
 namespace DevLoopLB.Controllers
 {
@@ -13,12 +12,14 @@ namespace DevLoopLB.Controllers
     public class EventsController(IEventService eventService) : ControllerBase
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvents()
         {
             var events = await eventService.GetAllEventsAsync();
             return Ok(events);
         }
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
             var evt = await eventService.GetEventByIdAsync(id);
@@ -29,6 +30,7 @@ namespace DevLoopLB.Controllers
             return Ok(evt);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateEvent([FromForm] SaveEventDTO evt)
         {
             if (!ModelState.IsValid || !evt.Gallery.Any() || !TryValidateModel(evt.Gallery, "SaveImageAssetDTO"))
@@ -40,6 +42,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteEvent(int id)
         {
             await eventService.DeleteEventAsync(id);
@@ -47,6 +50,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateEvent (int id, [FromForm] SaveEventDTO evt)
         {
             if (!ModelState.IsValid || !evt.Gallery.Any() || !TryValidateModel(evt.Gallery, "SaveImageAssetDTO"))

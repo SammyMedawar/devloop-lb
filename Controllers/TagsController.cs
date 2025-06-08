@@ -1,5 +1,6 @@
 ﻿using DevLoopLB.Models;
 using DevLoopLB.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevLoopLB.Controllers
@@ -9,6 +10,7 @@ namespace DevLoopLB.Controllers
     public class TagsController (ITagService tagService) : ControllerBase
     {
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<Tag>>> GetTags()
         {
             var events = await tagService.GetAllTagsAsync();
@@ -16,6 +18,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Event>> GetTag(int id)
         {
             var tag = await tagService.GetTagByIdAsync(id);
@@ -27,6 +30,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateTag([FromBody] Tag tag)
         {
             if (!ModelState.IsValid)
@@ -39,6 +43,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> UpdateTag(int id, [FromBody] Tag tag)
         {
             if (!ModelState.IsValid || id == 0)
@@ -51,6 +56,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> DeleteTag(int id)
         {
             await tagService.DeleteTagAsync(id);

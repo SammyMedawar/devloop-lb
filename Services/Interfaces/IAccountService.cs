@@ -1,7 +1,11 @@
-﻿namespace DevLoopLB.Services.Interfaces
+﻿using DevLoopLB.DTO;
+
+namespace DevLoopLB.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<string?> LoginAsync(string username, string password);
+        Task<JwtTokenResponse> LoginAsync(string username, string password, bool checkIfAdmin = false);
+        Task<JwtTokenResponse> RefreshTokenAsync(string refreshToken);
+        Task LogoutAsync(string refreshToken);
     }
 }
