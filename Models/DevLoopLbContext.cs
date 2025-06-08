@@ -20,6 +20,7 @@ public partial class DevLoopLbContext : DbContext
     public virtual DbSet<Tag> Tags { get; set; }
 
     public virtual DbSet<Account> Accounts { get; set; }
+    public virtual DbSet<Academy> Academies { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=DevLoopLB;Trusted_Connection=True;TrustServerCertificate=True;");
@@ -124,6 +125,24 @@ public partial class DevLoopLbContext : DbContext
 
             entity.HasIndex(e => e.Username).IsUnique();
             entity.HasIndex(e => e.Email).IsUnique();
+        });
+
+        modelBuilder.Entity<Academy>(entity =>
+        {
+            entity.HasKey(e => e.AcademyId).HasName("PK__Academy__AcademyID");
+
+            entity.ToTable("Academy");
+
+            entity.Property(e => e.AcademyId).HasColumnName("AcademyID");
+            entity.Property(e => e.Title).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.ShortDescription).HasMaxLength(255).IsRequired();
+            entity.Property(e => e.LongDescription).HasColumnType("TEXT");
+            entity.Property(e => e.MetaTitle).HasMaxLength(255);
+            entity.Property(e => e.MetaDescription).HasMaxLength(255);
+            entity.Property(e => e.PosterLink).HasMaxLength(255);
+            entity.Property(e => e.DateCreated).HasColumnType("DATETIME");
+            entity.Property(e => e.ReadMoreLink).HasMaxLength(255);
+            entity.Property(e => e.ReadMoreText).HasMaxLength(255);
         });
 
 

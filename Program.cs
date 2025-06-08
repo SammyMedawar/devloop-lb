@@ -33,6 +33,8 @@ builder.Services.AddScoped<IImageAssetRepository, ImageAssetRepository>();
 builder.Services.AddScoped<IImageAssetService, ImageAssetService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAcademyRepository, AcademyRepository>();
+builder.Services.AddScoped<IAcademyService, AcademyService>();
 
 //jwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
