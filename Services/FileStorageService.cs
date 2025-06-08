@@ -51,6 +51,7 @@ namespace DevLoopLB.Services
                     await file.CopyToAsync(stream);
                     _logger.LogInformation("Saved file without conversion: {FileName}", fileName);
                 }
+                return $"/{folderName}/{fileName}";
             }
             catch (Exception ex)
             {
