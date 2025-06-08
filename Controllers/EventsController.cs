@@ -2,6 +2,7 @@
 using DevLoopLB.Models;
 using DevLoopLB.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Logging;
 
 namespace DevLoopLB.Controllers
@@ -56,6 +57,7 @@ namespace DevLoopLB.Controllers
         }
 
         [HttpGet("filtered")]
+        [EnableRateLimiting("EventFilterPolicy")]
         public async Task<ActionResult<EventPagedResponseDTO>> GetFilteredEvents([FromQuery] EventFilterRequestDTO filter)
         {
             if (!ModelState.IsValid)

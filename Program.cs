@@ -5,6 +5,7 @@ using DevLoopLB.Repositories;
 using DevLoopLB.Repositories.Interfaces;
 using DevLoopLB.Services;
 using DevLoopLB.Services.Interfaces;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,23 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IImageAssetRepository, ImageAssetRepository>();
 builder.Services.AddScoped<IImageAssetService, ImageAssetService>();
 
+//rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("EventFilterPolicy", options =>
+    {
+        options.PermitLimit = 15;
+        options.Window = TimeSpan.FromMinutes(1);
+        options.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 5;
+    });
+    options.OnRejected = async (context, token) =>
+    {
+        context.HttpContext.Response.StatusCode = 429;
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.", cancellationToken: token);
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -38,10 +56,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRateLimiter();
+app.UseRouting();
 app.UseAuthorization();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.MapControllers();
-
 app.Run();
