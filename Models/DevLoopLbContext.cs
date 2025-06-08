@@ -19,6 +19,8 @@ public partial class DevLoopLbContext : DbContext
 
     public virtual DbSet<Tag> Tags { get; set; }
 
+    public virtual DbSet<Account> Accounts { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=DevLoopLB;Trusted_Connection=True;TrustServerCertificate=True;");
 
@@ -94,6 +96,36 @@ public partial class DevLoopLbContext : DbContext
             entity.Property(e => e.TagId).HasColumnName("TagID");
             entity.Property(e => e.Name).HasMaxLength(100);
         });
+
+        modelBuilder.Entity<Account>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.ToTable("Account");
+
+            entity.Property(e => e.Id)
+                .HasColumnName("ID");
+
+            entity.Property(e => e.Username)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            entity.Property(e => e.Email)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            entity.Property(e => e.HashedPassword)
+                .HasColumnType("VARBINARY(64)")
+                .IsRequired();
+
+            entity.Property(e => e.IsAdmin)
+                .HasColumnType("BIT")
+                .IsRequired();
+
+            entity.HasIndex(e => e.Username).IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

@@ -39,6 +39,7 @@ namespace DevLoopLB.Middlewares
                 //FileStorageException => (StatusCodes.Status500InternalServerError, "File operation failed"),
                 KeyNotFoundException => (StatusCodes.Status404NotFound, "Resource not found"),
                 ArgumentException => (StatusCodes.Status400BadRequest, "Invalid request data"),
+                InvalidLoginException => (StatusCodes.Status401Unauthorized, exception.Message),
                 _ => (StatusCodes.Status500InternalServerError, "An internal server error occurred")
             };
 

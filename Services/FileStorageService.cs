@@ -1,5 +1,4 @@
 ﻿using DevLoopLB.Services.Interfaces;
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 
 namespace DevLoopLB.Services
