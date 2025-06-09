@@ -32,7 +32,6 @@ namespace DevLoopLB.Services
 
             return academy.AcademyId;
         }
-        }
 
         public async Task DeleteAcademyAsync(int id)
         {
